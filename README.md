@@ -1,0 +1,365 @@
+# Mokesh Nagpal Portfolio
+
+Static React + Bootstrap portfolio website for Mokesh Nagpal. The site is fully client-side, responsive, cached with a service worker, and organized with reusable components and JSON-driven content.
+
+There is no backend, database, API key, prediction feature, chatbot service, or form submission flow in this version.
+
+## Current Profile Focus
+
+- Software Developer at Fastenal India
+- Java and Full Stack Developer
+- Java, React, Spring Boot, Spring Data JPA
+- Monolithic, microservices, and BFF-based architecture experience
+- Strong in OOP, DSA, backend fundamentals, and clean software design
+- Gold Medalist, Lovely Professional University
+- Placement Coordinator, BIT Mesra
+ - Research, patents, ML, Natural Language Processing (NLP), text classification, prompt engineering, fine‑tuning generative models, RAG, LangChain, and IoT experience
+
+## Features
+
+- Static React single-page portfolio
+- Bootstrap 5 responsive grid and navbar
+- Same-page section navigation with only one active section visible
+- URL hash support such as `#projects`, `#achievements`, and `#contact`
+- Browser back/forward support for section changes
+- Dark/light theme toggle with dark mode as default
+- Theme preference saved in `localStorage` and cookie `portfolio-theme`
+- Reusable custom components in `src/js/components.js`
+- JSON-driven portfolio content
+- Project search, category filter, type filter, stream filter, and year filter
+- Achievements section with education-style formatting
+- Project, patent, and research cards with aligned media blocks
+- Responsive card spacing and mobile-friendly layout
+- Direct contact links for email, phone, LinkedIn, GitHub, and LeetCode
+- Compact footer with headline, copyright, quick links, and social links
+- Optional CV download button
+- Service worker caching for local-server and deployed previews
+ - Optional Generative AI / RAG demos using LangChain and vector search (project-level integrations are optional)
+
+## Tech Stack
+
+- React 18
+- Bootstrap 5
+- HTML5
+- CSS3
+- JavaScript
+- JSON
+- Font Awesome icons
+- Service Worker API
+ - LangChain, RAG (retrieval-augmented generation), and vector DBs for retrieval workflows
+ - Model fine-tuning tools and prompt engineering practices for generative AI
+
+## Folder Structure
+
+```text
+PORTFOLIO v4/
+|-- index.html
+|-- README.md
+|-- service-worker.js
+|-- .env
+|-- package.json
+|-- tools/
+|   `-- build-app-runtime.js
+|-- src/
+|   |-- js/
+|   |   |-- app.js
+|   |   |-- app.runtime.js
+|   |   `-- components.js
+|   `-- css/
+|       `-- site.css
+`-- public/
+    |-- css/
+    |   `-- bootstrap.min.css
+    |-- js/
+    |   `-- bootstrap.bundle.min.js
+    |-- files/
+    |   `-- mokesh_nagpal.pdf
+    |-- images/
+    |   `-- portfolio images
+    |-- logo/
+    |   `-- icons, favicon, logo, and web manifest
+    `-- profile/
+        `-- profile.jpg
+```
+
+## Main Files
+
+- `index.html` contains the static page shell and script/style references.
+- `src/js/app.js` contains the editable React app source, navigation logic, filters, and section composition.
+- `src/js/app.runtime.js` is the precompiled browser runtime generated from `app.js` with injected portfolio data.
+- `src/js/components.js` contains reusable UI components such as cards, headings, skill pills, profile image, social links, theme toggle, and timeline sections.
+- `src/css/site.css` contains custom theme, layout, responsive, and card alignment styles.
+- `service-worker.js` handles caching.
+- `tools/build-app-runtime.js` reads `.env`, compiles the React app source, and injects data into the browser runtime.
+- `.env` stores the portfolio data in the `PORTFOLIO_DATA` key as a minified JSON string.
+- `package.json` defines project script commands.
+
+## Run Locally
+
+Recommended local preview is through a local server.
+
+With VS Code Live Server:
+
+1. Open this folder in VS Code.
+2. Right-click `index.html`.
+3. Select `Open with Live Server`.
+
+The app can also be opened directly from `index.html`, but service worker caching and the web manifest work correctly only through `localhost` or HTTPS.
+
+## Content Updates
+
+Edit portfolio content inside the `.env` file at the root:
+
+```text
+PORTFOLIO_DATA={"full_name":"Mokesh Nagpal", ...}
+```
+
+After editing the `.env` data or source files, rebuild the runtime script used by `index.html`:
+
+```bash
+npm run build
+```
+
+Important data sections:
+
+- `full_name`
+- `headline`
+- `professional_summary`
+- `about_title`
+- `about_highlights`
+- `assets`
+- `work_experiences`
+- `voluntary_works`
+- `education`
+- `achievements`
+- `technical_skills`
+- `interpersonal_skills`
+- `projects`
+- `patents`
+- `research_works`
+- `social_links`
+
+## Current Sections
+
+- Home
+- About
+- Volunteering
+- Work Experience
+- Education
+- Achievements
+- Skills
+- Projects
+- Patents
+- Research
+- Contacts
+
+## Current Highlighted Content
+
+- Software Developer and Software Developer Trainee experience at Fastenal India
+- Spring Boot, Spring Data JPA, Java, React, backend APIs, and architecture experience
+ - Gold Medalist achievement updated to `Jan 2026`
+- Data Science Hackathon, War of Words, and INCREDIBLE-8 achievements
+- Latest patents:
+  - IOT-Enabled Analog Clock With Remote Time Adjustment
+  - Smart Key Rack Device With Weight-Based Authentication and IoT Notification System
+- Latest research:
+  - Predictive Analytics for Youth Mental Health
+  - IoT and Cloud Computing-Based Traffic Management System
+- Latest projects:
+  - MCA Vault - Academic & Placement Portal
+  - FemTrack - Menstrual Cycle Tracker & Fertility Predictor
+  - Maven Dependency Analyzer & Vulnerability Scanner
+
+## Images
+
+Portfolio images are stored in:
+
+```text
+public/images/
+```
+
+Image names in `portfolio-data.json` must exactly match the file names in `public/images`, including spaces, capitalization, and extension.
+
+Examples:
+
+```text
+MCA Vault - Academic and Placement Portal.jpg
+FemTrack - Menstrual Cycle Tracker and Fertility Predictor.jpg
+Maven Dependency Analyzer and Vulnerability Scanner.jpg
+Predictive Analytics for Youth Mental Health.jpg
+IOT-Enabled Analog Clock With Remote Time Adjustment.jpg
+Smart Key Rack Device With Weight-Based Authentication and IoT Notification System.jpg
+```
+
+## Theme Preference
+
+The site defaults to dark mode.
+
+When a visitor changes the theme, the preference is saved in:
+
+- `localStorage`
+- cookie named `portfolio-theme`
+
+If no saved preference exists, the app uses dark mode.
+
+## Caching
+
+`service-worker.js` caches static assets when the site is served over `localhost` or HTTPS.
+
+Precached assets include:
+
+- `index.html`
+- data scripts
+- editable and runtime React app scripts
+- reusable component script
+- custom CSS
+- Bootstrap CSS and JS
+- portfolio images
+- logo and favicon files
+- web manifest
+
+Current cache version:
+
+```js
+const CACHE_VERSION = "portfolio-v1.4.7";
+```
+
+When changing CSS, scripts, images, or cached files, bump `CACHE_VERSION` so browsers receive the latest version.
+
+Service workers do not run on `file://`.
+
+## CV Download
+
+The Download CV button is optional.
+
+Expected file path:
+
+```text
+public/files/mokesh_nagpal.pdf
+```
+
+To show the button, set:
+
+```json
+"assets": {
+  "resume_pdf": true
+}
+```
+
+If the PDF is missing or `resume_pdf` is `false`, the button stays hidden.
+
+## Contacts
+
+The contacts section uses direct links only. There is no contact form.
+
+Update contact details in:
+
+```json
+"social_links": {
+  "email": "your-email@example.com",
+  "phone": "+91 XXXXX XXXXX",
+  "linkedin": "https://www.linkedin.com/...",
+  "github": "https://github.com/...",
+  "leetcode": "https://leetcode.com/..."
+}
+```
+
+## Responsive Design
+
+The layout uses Bootstrap and custom CSS breakpoints.
+
+Key responsive behavior:
+
+- Navbar collapses on smaller screens.
+- Navbar spacing is tightened on laptop widths.
+- Hero content stacks naturally on mobile.
+- Project toolbar changes from five columns to two columns and then one column.
+- Project, patent, research, and achievement cards use Bootstrap responsive columns.
+- Contact facts become one column on mobile.
+- Footer switches from three columns to one column on mobile.
+- Card media height reduces on small screens.
+- Section spacing is reduced on mobile.
+- Text wraps inside cards to avoid overflow.
+
+Main responsive breakpoints are in:
+
+```text
+src/css/site.css
+```
+
+Look for:
+
+```css
+@media (max-width: 992px)
+@media (max-width: 768px)
+```
+
+## Verification Commands
+
+Run these after changes:
+
+```bash
+npm run build
+```
+
+```bash
+node -e "const fs = require('fs'); const content = fs.readFileSync('.env', 'utf8'); const val = content.substring(content.indexOf('=') + 1); JSON.parse(val.trim()); console.log('Env JSON OK')"
+```
+
+```bash
+node --check src/js/components.js
+node --check src/js/app.runtime.js
+node --check service-worker.js
+node --check tools/build-app-runtime.js
+```
+
+Recommended manual responsive widths:
+
+- `375px` mobile
+- `768px` tablet
+- `1024px` laptop
+- `1440px` desktop
+
+Check these sections at each width:
+
+- Home
+- Achievements
+- Skills
+- Projects
+- Patents
+- Research
+- Contacts
+
+## Deploy
+
+Upload these files and folders to any static host:
+
+```text
+index.html
+service-worker.js
+src/
+public/
+tools/
+README.md
+```
+
+Recommended static hosts:
+
+- GitHub Pages
+- Netlify
+- Vercel
+- Cloudflare Pages
+- Firebase Hosting
+
+## Removed From Old Version
+
+- Flask backend
+- Backend server dependency for the portfolio
+- Jinja templates
+- Firebase backend contact submission
+- Resume chatbot or prediction feature
+- FAISS vector database
+- Backend environment files
+- Contact form submission flow
+
+The portfolio is now a static, client-side React + Bootstrap website.
