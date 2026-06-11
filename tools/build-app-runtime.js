@@ -7,9 +7,13 @@ const SOURCE_PATH = "src/js/app.js";
 const RUNTIME_PATH = "src/js/app.runtime.js";
 
 function getPortfolioDataFromEnv() {
+  if (process.env.PORTFOLIO_DATA) {
+    return process.env.PORTFOLIO_DATA;
+  }
+
   const envPath = path.resolve(__dirname, "..", ".env");
   if (!fs.existsSync(envPath)) {
-    throw new Error("No .env file found at project root");
+    throw new Error("No .env file found at project root and PORTFOLIO_DATA is not set in process.env");
   }
   const content = fs.readFileSync(envPath, "utf8");
   const lines = content.split(/\r?\n/);
@@ -24,7 +28,7 @@ function getPortfolioDataFromEnv() {
       return value;
     }
   }
-  throw new Error("PORTFOLIO_DATA not found in .env");
+  throw new Error("PORTFOLIO_DATA not found in .env file or environment");
 }
 
 async function main() {

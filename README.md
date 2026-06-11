@@ -330,26 +330,22 @@ Check these sections at each width:
 - Research
 - Contacts
 
-## Deploy
+## Deploy to Vercel
 
-Upload these files and folders to any static host:
+Since this project uses environment variables at build-time to inject data into `app.runtime.js`, configure Vercel as follows:
 
-```text
-index.html
-service-worker.js
-src/
-public/
-tools/
-README.md
-```
+1. **Connect Repository:** Import this repository in Vercel.
+2. **Build & Development Settings:**
+   - **Build Command:** `node tools/build-app-runtime.js`
+   - **Output Directory:** `.` (the root folder where `index.html` resides)
+   - **Install Command:** Keep empty or default.
+3. **Environment Variables:**
+   - Add a new environment variable:
+     - **Key:** `PORTFOLIO_DATA`
+     - **Value:** Copy the minified JSON string value of `PORTFOLIO_DATA` from your local `.env` file.
+4. **Deploy:** Click **Deploy**. Vercel will build the runtime and inject the data directly.
 
-Recommended static hosts:
-
-- GitHub Pages
-- Netlify
-- Vercel
-- Cloudflare Pages
-- Firebase Hosting
+Other supported static hosts (Netlify, GitHub Pages, etc.) can also be used, provided their build configurations run the build command and define the `PORTFOLIO_DATA` environment variable.
 
 ## Removed From Old Version
 
