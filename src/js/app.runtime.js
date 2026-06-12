@@ -39,29 +39,6 @@ window.PORTFOLIO_DATA = {
       "end_date": "Jul '25"
     }
   ],
-  "voluntary_works": [
-    {
-      "position": "Placement Coordinator",
-      "company": "Training and Placement Cell, BIT Mesra",
-      "description": "Contributed to training and placement activities while strengthening communication, coordination, teamwork, leadership, and problem-solving skills. Received a Certificate of Appreciation for contribution to the Training & Placement Cell.",
-      "start_date": "2025",
-      "end_date": "2026"
-    },
-    {
-      "position": "Vice President",
-      "company": "Hostel 4 Committee, LPU",
-      "description": "Led innovative initiatives and managed team operations to enhance hostel activities.",
-      "start_date": "2023",
-      "end_date": "2023"
-    },
-    {
-      "position": "Class Representative",
-      "company": "School of Computer Applications, LPU",
-      "description": "Coordinated academic and extracurricular events to represent and support the class.",
-      "start_date": "2022",
-      "end_date": "2024"
-    }
-  ],
   "education": [
     {
       "degree": "Master of Computer Applications",
@@ -106,6 +83,29 @@ window.PORTFOLIO_DATA = {
       "description": "Won a sustainability challenge focused on creative and practical problem-solving.",
       "date": "Apr 2022",
       "category": "Co-curricular"
+    }
+  ],
+  "voluntary_works": [
+    {
+      "position": "Placement Coordinator",
+      "company": "Training and Placement Cell, BIT Mesra",
+      "description": "Contributed to training and placement activities while strengthening communication, coordination, teamwork, leadership, and problem-solving skills. Received a Certificate of Appreciation for contribution to the Training & Placement Cell.",
+      "start_date": "2025",
+      "end_date": "2026"
+    },
+    {
+      "position": "Vice President",
+      "company": "Hostel 4 Committee, LPU",
+      "description": "Led innovative initiatives and managed team operations to enhance hostel activities.",
+      "start_date": "2023",
+      "end_date": "2023"
+    },
+    {
+      "position": "Class Representative",
+      "company": "School of Computer Applications, LPU",
+      "description": "Coordinated academic and extracurricular events to represent and support the class.",
+      "start_date": "2022",
+      "end_date": "2024"
     }
   ],
   "technical_skills": {
