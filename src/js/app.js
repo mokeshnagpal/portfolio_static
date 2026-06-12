@@ -40,7 +40,6 @@ const COLLECTION_SECTIONS = [
 ];
 
 const SECTION_IDS = NAV_LINKS.map(([, href]) => href.replace("#", ""));
-const RESUME_PATH = "https://drive.google.com/file/d/1svNogiJjLzwuY00hYbtK25pIiYnPmxtR/view?usp=sharing";
 const THEME_KEY = "portfolio-theme";
 const DEFAULT_THEME = "dark";
 
@@ -125,7 +124,7 @@ function Navbar({ activeSection, cv, onNavigate, theme, onThemeToggle }) {
 }
 
 function Hero({ cv, onNavigate }) {
-  const heroIntro = "Full Stack Developer building clean, scalable, production-ready software.";
+  const heroIntro = cv.hero_intro || "";
   const hasCv = cv.assets?.resume_pdf;
 
   return (
@@ -141,7 +140,7 @@ function Hero({ cv, onNavigate }) {
             <p className="hero-summary">{heroIntro}</p>
             <div className="hero-actions">
               {hasCv ? (
-                <a href={RESUME_PATH} className="btn btn-primary btn-lg" target="_blank" rel="noreferrer">
+                <a href={cv.resume_url || ""} className="btn btn-primary btn-lg" target="_blank" rel="noreferrer">
                   <i className="fa-solid fa-file-pdf"></i> Resume
                 </a>
               ) : null}
@@ -397,9 +396,115 @@ function registerServiceWorker() {
   });
 }
 
+function safeParseJson(str) {
+  try {
+    return JSON.parse(str);
+  } catch (err) {
+    try {
+      return JSON.parse(str + "}");
+    } catch (err2) {
+      try {
+        return JSON.parse(str + "]}");
+      } catch (err3) {
+        throw new Error(`Failed to parse JSON: ${err.message}`);
+      }
+    }
+  }
+}
+
 async function loadPortfolioData() {
   if (window.PORTFOLIO_DATA) return window.PORTFOLIO_DATA;
-  throw new Error("Unable to load portfolio data.");
+
+  const response = await fetch("env");
+  if (!response.ok) {
+    throw new Error("Unable to load .env file.");
+  }
+  const content = await response.text();
+  const env = {};
+  const lines = content.split(/\r?\n/);
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith("#")) continue;
+    const eqIdx = trimmed.indexOf("=");
+    if (eqIdx === -1) continue;
+    const key = trimmed.substring(0, eqIdx).trim();
+    let val = trimmed.substring(eqIdx + 1).trim();
+    if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+      val = val.substring(1, val.length - 1);
+    }
+    env[key] = val;
+  }
+
+  let parsedData = {};
+  if (env.PORTFOLIO_DATA) {
+    try {
+      parsedData = JSON.parse(env.PORTFOLIO_DATA);
+    } catch (err) {
+      // Fallback if PORTFOLIO_DATA is not valid JSON
+    }
+  }
+
+  const mergedData = {};
+
+  if (env.PORTFOLIO_PROFILE) {
+    const profile = safeParseJson(env.PORTFOLIO_PROFILE);
+    Object.assign(mergedData, profile);
+  }
+
+  if (env.PORTFOLIO_WORK) {
+    mergedData.work_experiences = safeParseJson(env.PORTFOLIO_WORK);
+  }
+
+  if (env.PORTFOLIO_EDUCATION) {
+    mergedData.education = safeParseJson(env.PORTFOLIO_EDUCATION);
+  }
+
+  if (env.PORTFOLIO_ACHIEVEMENTS) {
+    mergedData.achievements = safeParseJson(env.PORTFOLIO_ACHIEVEMENTS);
+  }
+
+  if (env.PORTFOLIO_VOLUNTEER) {
+    mergedData.voluntary_works = safeParseJson(env.PORTFOLIO_VOLUNTEER);
+  }
+
+  if (env.PORTFOLIO_SKILLS) {
+    const skills = safeParseJson(env.PORTFOLIO_SKILLS);
+    Object.assign(mergedData, skills);
+  }
+
+  const projects = [];
+  let pIdx = 1;
+  while (env[`PORTFOLIO_PROJECTS_${pIdx}`]) {
+    const projPart = safeParseJson(env[`PORTFOLIO_PROJECTS_${pIdx}`]);
+    if (Array.isArray(projPart)) {
+      projects.push(...projPart);
+    }
+    pIdx++;
+  }
+  if (projects.length > 0) {
+    mergedData.projects = projects;
+  }
+
+  if (env.PORTFOLIO_PATENTS) {
+    mergedData.patents = safeParseJson(env.PORTFOLIO_PATENTS);
+  }
+
+  if (env.PORTFOLIO_RESEARCH_WORKS) {
+    mergedData.research_works = safeParseJson(env.PORTFOLIO_RESEARCH_WORKS);
+  }
+
+  if (env.PORTFOLIO_SOCIAL_LINKS) {
+    mergedData.social_links = safeParseJson(env.PORTFOLIO_SOCIAL_LINKS);
+  }
+
+  const finalData = { ...parsedData, ...mergedData };
+
+  if (Object.keys(finalData).length === 0) {
+    throw new Error("No portfolio data found in environment or .env file");
+  }
+
+  window.PORTFOLIO_DATA = finalData;
+  return finalData;
 }
 
 function getInitialSection() {
