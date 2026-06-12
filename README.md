@@ -114,8 +114,7 @@ Edit portfolio content inside the `.env` file at the root:
 PORTFOLIO_DATA={"full_name":"Mokesh Nagpal", ...}
 ```
 
-All portfolio data is dynamically loaded from the `.env` file in the browser at runtime. 
-Rebuilding is only necessary if you make changes to the JavaScript application source code (`src/js/app.js`):
+All portfolio data is injected into the application bundle at build-time. If you edit the portfolio data inside the `.env` file, you must rebuild the application runtime:
 
 ```bash
 node tools/build-app-runtime.js
@@ -333,7 +332,7 @@ Check these sections at each width:
 
 ## Deploy to Vercel
 
-Since this project fetches the `.env` file at runtime, the build command on Vercel generates the `.env` file dynamically from the environment variables configured in the Vercel dashboard:
+Since this project uses build-time environment variable injection, the build command on Vercel reads your configured environment variables and embeds them directly into the compiled `src/js/app.runtime.js` bundle:
 
 1. **Connect Repository:** Import this repository in Vercel.
 2. **Build & Development Settings:**
@@ -341,7 +340,7 @@ Since this project fetches the `.env` file at runtime, the build command on Verc
    - **Output Directory:** `.` (the root folder where `index.html` resides)
    - **Install Command:** Keep empty or default.
 3. **Environment Variables:**
-   - Configure all variables (`PORTFOLIO_PROFILE`, `PORTFOLIO_WORK`, etc.) in Vercel just like in your local `.env`. The build script will recreate the `.env` file on the Vercel server.
+   - Configure all variables (`PORTFOLIO_PROFILE`, `PORTFOLIO_WORK`, etc.) in Vercel just like in your local `.env`. The build script will read them and inject them into the production build of `src/js/app.runtime.js`.
 4. **Deploy:** Click **Deploy**.*
 
 Other supported static hosts (Netlify, GitHub Pages, etc.) can also be used, provided their build configurations run the build command and define the `PORTFOLIO_DATA` environment variable.

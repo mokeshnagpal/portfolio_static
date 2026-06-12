@@ -38,8 +38,33 @@ function generateEnvIfMissing() {
   }
 }
 
+// Load local .env variables into process.env if available (useful for local development builds)
+function loadEnvFile() {
+  const envPath = path.resolve(__dirname, "..", ".env");
+  if (fs.existsSync(envPath)) {
+    const content = fs.readFileSync(envPath, "utf8");
+    const lines = content.split(/\r?\n/);
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith("#")) continue;
+      const eqIdx = trimmed.indexOf("=");
+      if (eqIdx === -1) continue;
+      const key = trimmed.substring(0, eqIdx).trim();
+      let val = trimmed.substring(eqIdx + 1).trim();
+      if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+        val = val.substring(1, val.length - 1);
+      }
+      if (!process.env[key]) {
+        process.env[key] = val;
+      }
+    }
+  }
+}
+
 async function main() {
   generateEnvIfMissing();
+  loadEnvFile();
+
 
   const source = fs.readFileSync(SOURCE_PATH, "utf8");
   const babelSource = await fetch(BABEL_URL).then((response) => {
@@ -57,7 +82,32 @@ async function main() {
     compact: false,
   }).code;
 
-  fs.writeFileSync(RUNTIME_PATH, `${runtime}\n`, "utf8");
+  const injectedData = {
+    PORTFOLIO_DATA: process.env.PORTFOLIO_DATA || null,
+    PORTFOLIO_PROFILE: process.env.PORTFOLIO_PROFILE || null,
+    PORTFOLIO_WORK: process.env.PORTFOLIO_WORK || null,
+    PORTFOLIO_EDUCATION: process.env.PORTFOLIO_EDUCATION || null,
+    PORTFOLIO_ACHIEVEMENTS: process.env.PORTFOLIO_ACHIEVEMENTS || null,
+    PORTFOLIO_VOLUNTEER: process.env.PORTFOLIO_VOLUNTEER || null,
+    PORTFOLIO_SKILLS: process.env.PORTFOLIO_SKILLS || null,
+    PORTFOLIO_PATENTS: process.env.PORTFOLIO_PATENTS || null,
+    PORTFOLIO_RESEARCH_WORKS: process.env.PORTFOLIO_RESEARCH_WORKS || null,
+    PORTFOLIO_SOCIAL_LINKS: process.env.PORTFOLIO_SOCIAL_LINKS || null,
+  };
+
+  for (let i = 1; i <= 10; i++) {
+    injectedData[`PORTFOLIO_PROJECTS_${i}`] =
+      process.env[`PORTFOLIO_PROJECTS_${i}`] || null;
+  }
+
+  fs.writeFileSync(
+    RUNTIME_PATH,
+    `
+window.__ENV__ = ${JSON.stringify(injectedData)};
+${runtime}
+`,
+    "utf8"
+  );
   console.log(`Built ${RUNTIME_PATH}`);
 }
 

@@ -415,24 +415,12 @@ function safeParseJson(str) {
 async function loadPortfolioData() {
   if (window.PORTFOLIO_DATA) return window.PORTFOLIO_DATA;
 
-  const response = await fetch(".env");
-  if (!response.ok) {
-    throw new Error("Unable to load .env file.");
-  }
-  const content = await response.text();
-  const env = {};
-  const lines = content.split(/\r?\n/);
-  for (const line of lines) {
-    const trimmed = line.trim();
-    if (!trimmed || trimmed.startsWith("#")) continue;
-    const eqIdx = trimmed.indexOf("=");
-    if (eqIdx === -1) continue;
-    const key = trimmed.substring(0, eqIdx).trim();
-    let val = trimmed.substring(eqIdx + 1).trim();
-    if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
-      val = val.substring(1, val.length - 1);
-    }
-    env[key] = val;
+  const env = window.__ENV__;
+
+  if (!env) {
+    throw new Error(
+      "Portfolio environment was not injected during build."
+    );
   }
 
   let parsedData = {};
