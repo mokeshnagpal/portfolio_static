@@ -1,8 +1,8 @@
-const CACHE_VERSION = "portfolio-v1.9.0";
+const CACHE_VERSION = "portfolio-v1.10.0";
 const PRECACHE_ASSETS = [
   "./",
   "./index.html",
-  "./env",
+  "./.env",
   "./src/js/app.js",
   "./src/js/app.runtime.js",
   "./src/css/site.css",

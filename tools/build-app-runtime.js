@@ -6,15 +6,10 @@ const BABEL_URL = "https://unpkg.com/@babel/standalone/babel.min.js";
 const SOURCE_PATH = "src/js/app.js";
 const RUNTIME_PATH = "src/js/app.runtime.js";
 
-// Generate public "env" file from .env or process.env (so Vercel doesn't block it)
-function generatePublicEnv() {
-  const localEnvPath = path.resolve(__dirname, "..", ".env");
-  const publicEnvPath = path.resolve(__dirname, "..", "env");
-
-  if (fs.existsSync(localEnvPath)) {
-    fs.copyFileSync(localEnvPath, publicEnvPath);
-    console.log("Copied .env to public env file");
-  } else {
+// Generate .env file from process.env if it doesn't exist (useful for CI/CD like Vercel)
+function generateEnvIfMissing() {
+  const envPath = path.resolve(__dirname, "..", ".env");
+  if (!fs.existsSync(envPath)) {
     const envKeys = [
       "PORTFOLIO_PROFILE",
       "PORTFOLIO_WORK",
@@ -37,14 +32,14 @@ function generatePublicEnv() {
       }
     }
     if (content) {
-      fs.writeFileSync(publicEnvPath, content, "utf8");
-      console.log("Generated public env file from system environment variables");
+      fs.writeFileSync(envPath, content, "utf8");
+      console.log("Generated .env file from system environment variables");
     }
   }
 }
 
 async function main() {
-  generatePublicEnv();
+  generateEnvIfMissing();
 
   const source = fs.readFileSync(SOURCE_PATH, "utf8");
   const babelSource = await fetch(BABEL_URL).then((response) => {

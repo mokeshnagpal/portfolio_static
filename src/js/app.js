@@ -415,7 +415,7 @@ function safeParseJson(str) {
 async function loadPortfolioData() {
   if (window.PORTFOLIO_DATA) return window.PORTFOLIO_DATA;
 
-  const response = await fetch("env");
+  const response = await fetch(".env");
   if (!response.ok) {
     throw new Error("Unable to load .env file.");
   }
