@@ -81,6 +81,17 @@ function applyTheme(theme) {
   document.querySelector('meta[name="theme-color"]')?.setAttribute("content", theme === "light" ? "#0f766e" : "#08111f");
 }
 
+function applyDocumentMetadata(cv) {
+  document.title = cv.full_name ? `${cv.full_name} | Portfolio` : "Portfolio";
+  const description = [
+    cv.full_name ? `Portfolio website of ${cv.full_name}` : "Portfolio website",
+    cv.headline,
+    "with projects, experience, achievements, research, and contact links.",
+  ].filter(Boolean).join(" - ");
+
+  document.querySelector('meta[name="description"]')?.setAttribute("content", description);
+}
+
 function Navbar({ activeSection, cv, onNavigate, theme, onThemeToggle }) {
   const closeMenu = () => {
     const nav = document.getElementById("siteNav");
@@ -125,6 +136,7 @@ function Navbar({ activeSection, cv, onNavigate, theme, onThemeToggle }) {
 
 function Hero({ cv, onNavigate }) {
   const heroIntro = cv.hero_intro || "";
+  const resumeUrl = cv.resume_url || "";
   const hasCv = cv.assets?.resume_pdf;
 
   return (
@@ -139,8 +151,8 @@ function Hero({ cv, onNavigate }) {
             {cv.headline ? <p className="hero-headline">{cv.headline}</p> : null}
             <p className="hero-summary">{heroIntro}</p>
             <div className="hero-actions">
-              {hasCv ? (
-                <a href={cv.resume_url || ""} className="btn btn-primary btn-lg" target="_blank" rel="noreferrer">
+              {hasCv && resumeUrl ? (
+                <a href={resumeUrl} className="btn btn-primary btn-lg" target="_blank" rel="noreferrer">
                   <i className="fa-solid fa-file-pdf"></i> Resume
                 </a>
               ) : null}
@@ -495,6 +507,10 @@ async function loadPortfolioData() {
   return finalData;
 }
 
+if (window.PORTFOLIO_DATA) {
+  applyDocumentMetadata(window.PORTFOLIO_DATA);
+}
+
 function getInitialSection() {
   const section = window.location.hash.replace("#", "");
   return SECTION_IDS.includes(section) ? section : "home";
@@ -517,6 +533,7 @@ function App() {
 
   useEffect(() => {
     if (!cv) return;
+    applyDocumentMetadata(cv);
     revealVisible();
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [activeSection, cv]);
